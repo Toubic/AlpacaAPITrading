@@ -19,12 +19,12 @@ wss.on("open", () => {
     // Subscribe to all news feeds
     const subscribeMessage = {
         action: "subscribe",
-        news: ["*"] ,
+        news: ["*"],
     };
     wss.send(JSON.stringify(subscribeMessage));
 });
 
-wss.on("message", async (message) => {
+wss.on("message", async (message: string) => {
     
     const currentEvent = JSON.parse(message)[0];
 
