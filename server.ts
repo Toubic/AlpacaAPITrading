@@ -1,9 +1,9 @@
-const Alpaca = require("@alpacahq/alpaca-trade-api");
+import Alpaca from "@alpacahq/alpaca-trade-api";
+import WebSocket from "ws";
+
 const alpaca = new Alpaca(); // Looks at the .env file for the API keys automatically
 
-const WebSocket = require("ws");
-
-const wss = new WebSocket("wss://stream.data.alpaca.markets/v1beta1/news");
+const wss: WebSocket = new WebSocket("wss://stream.data.alpaca.markets/v1beta1/news");
 
 wss.on("open", () => {
     console.log("Connected to the Alpaca API");
@@ -34,4 +34,3 @@ wss.on("message", async (message: string) => {
         console.log(currentEvent.headline);
     }
 });
-
