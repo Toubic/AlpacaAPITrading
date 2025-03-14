@@ -6,10 +6,18 @@ const app = Express();
 const alpaca = new Alpaca(); // Looks at the .env file for the API keys automatically
 
 const wss: WebSocket = new WebSocket("wss://stream.data.alpaca.markets/v1beta1/news");
-const news = {
-    headline: String,
-    summary: String,
-};
+
+type News = {
+    headline: string,
+    summary: string,
+    stockTickers: string
+}
+
+const news: News = {
+    headline: "",
+    summary: "",
+    stockTickers: "",
+}
 
 wss.on("open", () => {
     console.log("Connected to the Alpaca API");
@@ -33,17 +41,24 @@ wss.on("open", () => {
 wss.on("message", async (message: string) => {
     
     const currentEvent = JSON.parse(message)[0];
+    let stockTickers: string = "";
 
     console.log(currentEvent);
 
     if(currentEvent.T === "n") {
         news.headline = currentEvent.headline;
         news.summary = currentEvent.summary;
+        currentEvent.symbols.forEach((symbol: string) => {
+            stockTickers += `${symbol},`;
+        });
+
+        stockTickers = stockTickers.slice(0, -1);
+        news.stockTickers = stockTickers;
     }
 });
 
 app.get("/", function (req, res) {
-    res.send(`<h1>${news.headline}:</h1></br><p>${news.summary}</p>`);
+    news.headline !== "" ? res.send(`<h1>${news.headline} [${news.stockTickers}]</h1></br><p>${news.summary}</p>`) : res.send("<h1>No news</h1>");
   });
 
 app.listen(3000, () => {
