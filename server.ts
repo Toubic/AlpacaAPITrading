@@ -1,9 +1,15 @@
+import Express from "express";
 import Alpaca from "@alpacahq/alpaca-trade-api";
 import WebSocket from "ws";
 
+const app = Express();
 const alpaca = new Alpaca(); // Looks at the .env file for the API keys automatically
 
 const wss: WebSocket = new WebSocket("wss://stream.data.alpaca.markets/v1beta1/news");
+const news = {
+    headline: String,
+    summary: String,
+};
 
 wss.on("open", () => {
     console.log("Connected to the Alpaca API");
@@ -31,6 +37,15 @@ wss.on("message", async (message: string) => {
     console.log(currentEvent);
 
     if(currentEvent.T === "n") {
-        console.log(currentEvent.headline);
+        news.headline = currentEvent.headline;
+        news.summary = currentEvent.summary;
     }
+});
+
+app.get("/", function (req, res) {
+    res.send(`<h1>${news.headline}:</h1></br><p>${news.summary}</p>`);
+  });
+
+app.listen(3000, () => {
+    console.log("App listening on port 3000");
 });
