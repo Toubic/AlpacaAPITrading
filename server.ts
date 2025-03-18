@@ -58,7 +58,7 @@ wss.on("message", async (message: string) => {
 });
 
 app.get("/", function (req, res) {
-    news.headline !== "" ? res.send(`<h1>${news.headline} [${news.stockTickers}]</h1></br><p>${news.summary}</p>`) : res.send("<h1>No news</h1>");
+    news.headline !== "" ? res.send(`<div style="width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; background-color: aliceblue;"><h1>${news.headline} [${news.stockTickers}]</h1></br><p>${news.summary}</p></div>`) : res.send(`<div style="width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; background-color: aliceblue;"><h1>No news</h1></div>`);
   });
 
 app.listen(3000, () => {
