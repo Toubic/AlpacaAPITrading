@@ -60,7 +60,7 @@ wss.on("message", async (message: string) => {
 app.get("/", function (req, res) {
     const cssStyling: string = "width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; background-color: aliceblue;";
 
-    news.headline !== "" ? res.send(`<div style="${cssStyling}"><h1>${news.headline} [${news.stockTickers}]</h1></br><p>${news.summary}</p></div>`) : res.send(`<div style="${cssStyling}"><h1>No news</h1></div>`);
+    news.headline !== "" ? res.send(`<div style="${cssStyling}"><h1>Random stock news:</h1></br><h2>${news.headline} [${news.stockTickers}]</h2></br><p>${news.summary}</p></div>`) : res.send(`<div style="${cssStyling}"><h1>Random stock news:</h1></br><h2>No news</h2></div>`);
 });
 
 app.listen(3000, () => {
