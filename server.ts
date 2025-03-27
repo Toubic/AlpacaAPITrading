@@ -11,12 +11,14 @@ const wss = new WebSocketServer({ port: 3001 });
 type News = {
     headline: string,
     summary: string,
+    url: string,
     stockTickers: string
 }
 
 const news: News = {
     headline: "",
     summary: "",
+    url: "",
     stockTickers: "",
 }
 
@@ -49,6 +51,7 @@ wsa.on("message", async (message: string) => {
     if(currentEvent.T === "n") {
         news.headline = currentEvent.headline;
         news.summary = currentEvent.summary;
+        news.url = currentEvent.url;
         currentEvent.symbols.forEach((symbol: string) => {
             stockTickers += `${symbol},`;
         });
