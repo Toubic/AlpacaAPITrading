@@ -1,11 +1,12 @@
 import Express from "express";
 import Alpaca from "@alpacahq/alpaca-trade-api";
-import WebSocket from "ws";
+import WebSocket, { WebSocketServer } from "ws";
 
 const app = Express();
 const alpaca = new Alpaca(); // Looks at the .env file for the API keys automatically
 
-const wss: WebSocket = new WebSocket("wss://stream.data.alpaca.markets/v1beta1/news");
+const wsa: WebSocket = new WebSocket("wss://stream.data.alpaca.markets/v1beta1/news");
+const wss = new WebSocketServer({ port: 3001 });
 
 type News = {
     headline: string,
@@ -19,7 +20,7 @@ const news: News = {
     stockTickers: "",
 }
 
-wss.on("open", () => {
+wsa.on("open", () => {
     console.log("Connected to the Alpaca API");
 
     const authMessage = {
@@ -28,17 +29,17 @@ wss.on("open", () => {
         secret: process.env.APCA_API_SECRET_KEY,
     };
 
-    wss.send(JSON.stringify(authMessage)); 
+    wsa.send(JSON.stringify(authMessage)); 
 
     // Subscribe to all news feeds
     const subscribeMessage = {
         action: "subscribe",
         news: ["*"],
     };
-    wss.send(JSON.stringify(subscribeMessage));
+    wsa.send(JSON.stringify(subscribeMessage));
 });
 
-wss.on("message", async (message: string) => {
+wsa.on("message", async (message: string) => {
     
     const currentEvent = JSON.parse(message)[0];
     let stockTickers: string = "";
@@ -54,13 +55,17 @@ wss.on("message", async (message: string) => {
 
         stockTickers = stockTickers.slice(0, -1);
         news.stockTickers = stockTickers;
+
+        wss.clients.forEach(client => {
+            if (client.readyState === 1) { // Check if connection to client is open
+                client.send(JSON.stringify(news));
+            }
+        });
     }
 });
 
 app.get("/", function (req, res) {
-    const cssStyling: string = "width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; background-color: aliceblue;";
-
-    news.headline !== "" ? res.send(`<div style="${cssStyling}"><h1>Random stock news:</h1></br><h2>${news.headline} [${news.stockTickers}]</h2></br><p>${news.summary}</p></div>`) : res.send(`<div style="${cssStyling}"><h1>Random stock news:</h1></br><h2>No news</h2></div>`);
+    res.sendFile(__dirname + "/index.html");
 });
 
 app.listen(3000, () => {
