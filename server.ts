@@ -6,7 +6,7 @@ const app = Express();
 const alpaca = new Alpaca(); // Looks at the .env file for the API keys automatically
 
 const wsa: WebSocket = new WebSocket("wss://stream.data.alpaca.markets/v1beta1/news");
-const wss = new WebSocketServer({ port: 3001 });
+const wss = new WebSocketServer({ port: Number(process.env.PORT) || 3001 });
 
 type News = {
     headline: string,
@@ -71,6 +71,6 @@ app.get("/", function (req, res) {
     res.sendFile(__dirname + "/index.html");
 });
 
-app.listen(3000, () => {
+app.listen(process.env.PORT || 3000, () => {
     console.log("App listening on port 3000");
 });
