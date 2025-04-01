@@ -3,6 +3,7 @@ import Alpaca from "@alpacahq/alpaca-trade-api";
 import WebSocket, { WebSocketServer } from "ws";
 
 const app = Express();
+app.use(Express.static("public"));
 const alpaca = new Alpaca(); // Looks at the .env file for the API keys automatically
 
 const wsa: WebSocket = new WebSocket("wss://stream.data.alpaca.markets/v1beta1/news");
@@ -68,7 +69,7 @@ wsa.on("message", async (message: string) => {
 });
 
 app.get("/", function (req, res) {
-    res.sendFile(__dirname + "/index.html");
+    res.sendFile("index.html");
 });
 
 app.listen(process.env.PORT || 3000, () => {
