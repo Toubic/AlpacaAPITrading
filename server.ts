@@ -54,7 +54,7 @@ wsa.on("message", async (message: string) => {
         news.summary = currentEvent.summary;
         news.url = currentEvent.url;
         currentEvent.symbols.forEach((symbol: string) => {
-            if(symbol.includes("USD")) // Handle cryptocurrency symbols for correct hyperlinks
+            if(symbol.length === 6 && symbol.includes("USD")) // Handle cryptocurrency symbols for correct hyperlinks
                 symbol = symbol.replace("USD", "-USD");
             stockTickers += `<a href="https://finance.yahoo.com/quote/${symbol}/" target="_blank">${symbol}</a>,`;
         });
