@@ -54,7 +54,7 @@ wsa.on("message", async (message: string) => {
         news.summary = currentEvent.summary;
         news.url = currentEvent.url;
         currentEvent.symbols.forEach((symbol: string) => {
-            stockTickers += `${symbol},`;
+            stockTickers += `<a href="https://finance.yahoo.com/quote/${symbol}/" target="_blank">${symbol}</a>,`;
         });
 
         stockTickers = stockTickers.slice(0, -1);
