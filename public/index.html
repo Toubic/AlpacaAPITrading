@@ -8,26 +8,34 @@
 </head>
 <body>
     <h1>Latest Stock News</h1>
+    <input type="text" id="ticker-filter" placeholder="Enter tickers to filter (e.g., TSLA or AAPL,GOOG)..." oninput="renderNews()" />
     <div id="news-container">Waiting for news...</div>
 
-    <script>
-        const ws = new WebSocket("ws://localhost:3001"); // WebSocket connection for fetching news from the server
+<script>
+    const ws = new WebSocket("ws://localhost:3001");
 
-        ws.onmessage = (event) => {
-            const news = JSON.parse(event.data);
-            const container = document.getElementById("news-container");
+    const allNews = []; // Store all incoming news items
 
-            const newsItem = `
-                <div>
-                    <h2>${news.headline} [${news.stockTickers}]</h2>
-                    <p>${news.summary}</p>
-                    <a href="${news.url}" target="_blank">Read more</a>
-                </div>
-                <hr>
-            `;
+    ws.onmessage = (event) => {
+        const news = JSON.parse(event.data);
+        allNews.unshift(news); // Add to the beginning
+        renderNews(); // Refresh display
+    };
 
-            container.innerHTML = newsItem + container.innerHTML; // Add news item to the top
-        };
-    </script>
+    function renderNews() {
+        const container = document.getElementById("news-container");
+        const filterInput = document.getElementById("ticker-filter").value.toUpperCase();
+        const filterTickers = filterInput.split(',').map(ticker => ticker.trim()).filter(Boolean);
+        const newsList = filterTickers.length === 0 ? allNews : allNews.filter(news => filterTickers.some(ticker => news.stockTickers.includes(ticker)));
+        container.innerHTML = newsList.map(news => `
+            <div>
+                <h2>${news.headline} [${news.stockTickers}]</h2>
+                <p>${news.summary}</p>
+                <a href="${news.url}" target="_blank">Read more</a>
+            </div>
+            <hr>
+        `).join('');
+    }
+</script>
 </body>
 </html>
