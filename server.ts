@@ -14,6 +14,8 @@ type News = {
     summary: string,
     url: string,
     stockTickers: string
+    createdAt: string,
+    updatedAt: string,
 }
 
 const news: News = {
@@ -21,6 +23,8 @@ const news: News = {
     summary: "",
     url: "",
     stockTickers: "",
+    createdAt: "",
+    updatedAt: "",
 }
 
 wsa.on("open", () => {
@@ -53,6 +57,8 @@ wsa.on("message", async (message: string) => {
         news.headline = currentEvent.headline;
         news.summary = currentEvent.summary;
         news.url = currentEvent.url;
+        news.createdAt = currentEvent.created_at.slice(0, 10);
+        news.updatedAt = currentEvent.updated_at.slice(0, 10);
         currentEvent.symbols.forEach((symbol: string) => {
             if(symbol.length === 6 && symbol.includes("USD")) // Handle cryptocurrency symbols for correct hyperlinks
                 symbol = symbol.replace("USD", "-USD");

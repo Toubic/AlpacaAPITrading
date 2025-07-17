@@ -8,7 +8,7 @@
 </head>
 <body>
     <h1>Latest Stock News</h1>
-    <input type="text" id="ticker-filter" placeholder="Enter tickers to filter (e.g., TSLA or AAPL,GOOG)..." oninput="renderNews()" />
+    <input type="text" id="ticker-filter" placeholder="Optional: tickers to filter (e.g., TSLA or AAPL,GOOG)..." oninput="renderNews()" />
     <div id="news-container">Waiting for news...</div>
 
 <script>
@@ -29,9 +29,12 @@
         const newsList = filterTickers.length === 0 ? allNews : allNews.filter(news => filterTickers.some(ticker => news.stockTickers.includes(ticker)));
         container.innerHTML = newsList.map(news => `
             <div>
-                <h2>${news.headline} [${news.stockTickers}]</h2>
+                <h2>${news.headline} <h3>[${news.stockTickers}]</h3></h2>
                 <p>${news.summary}</p>
                 <a href="${news.url}" target="_blank">Read more</a>
+                <div>
+                    <small>(Created: ${news.createdAt} Updated: ${news.updatedAt})</small>
+                </div>
             </div>
             <hr>
         `).join('');
