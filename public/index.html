@@ -33,7 +33,7 @@
                 <p>${news.summary}</p>
                 <a href="${news.url}" target="_blank">Read more</a>
                 <div>
-                    <small>(Created: ${news.createdAt} Updated: ${news.updatedAt})</small>
+                    <small>(Created: ${news.createdAt}${news.createdAt !== news.updatedAt ? ` Updated: ${news.updatedAt}` : ""})</small>
                 </div>
             </div>
             <hr>
